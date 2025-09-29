@@ -1,0 +1,38 @@
+name: wordpress
+description: A comprehensive Flutter SDK for WordPress REST API integration with type-safe models, authentication, and complete CRUD operations.
+version: 1.0.0
+homepage: https://github.com/rohit-chouhan/wordpress-flutter
+repository: https://github.com/rohit-chouhan/wordpress-flutter
+issue_tracker: https://github.com/rohit-chouhan/wordpress-flutter/issues
+documentation: https://github.com/rohit-chouhan/wordpress-flutter#readme
+
+environment:
+  sdk: ^3.0.0
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+  json_annotation: ^4.8.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.7
+  json_serializable: ^6.7.1
+
+screenshots:
+  - description: "WordPress Flutter SDK"
+    path: logo.webp
+
+topics:
+  - wordpress
+  - wp
+  - wp-rest
+  - rest-api
+  - cms
+
+flutter:
+
