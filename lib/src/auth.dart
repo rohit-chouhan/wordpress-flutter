@@ -11,7 +11,7 @@ class Auth {
   /// Throws [WordPressException] on failure.
   Future<User> login(String username, String password) async {
     final url = Uri.parse('${wp.baseUrl}/wp-json/jwt-auth/v1/token');
-    final response = await http.post(
+    final response = await wp._client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'username': username, 'password': password}),
@@ -71,7 +71,7 @@ class Auth {
       if (lastName != null) 'last_name': lastName,
     };
 
-    final response = await http.post(
+    final response = await wp._client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),

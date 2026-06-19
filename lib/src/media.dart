@@ -35,7 +35,7 @@ class MediaModule {
     if (title != null) request.fields['title'] = title;
     if (description != null) request.fields['description'] = description;
 
-    final streamedResponse = await request.send();
+    final streamedResponse = await wp._client.send(request);
     final response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode == 201) {

@@ -2,7 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wordpress/wordpress.dart';
 
 void main() {
-  late WordPress wp;
+  group('Live API', () {
+    late WordPress wp;
 
   setUp(() {
     wp = WordPress(baseUrl: "https://blogs.rohitchouhan.com");
@@ -90,4 +91,5 @@ void main() {
     print('Register test user: ${user.getFullResponse()}');
     expect(user, isNotNull);
   });
+  }, skip: 'Live API integration tests. Run manually.');
 }

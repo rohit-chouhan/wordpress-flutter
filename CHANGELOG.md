@@ -1,3 +1,15 @@
+## 1.0.1
+
+### 🐛 Bug Fixes
+- **Auth Endpoint Leak**: Fixed `Auth.login` and `Auth.register` to use the injected HTTP client, allowing for proper interception and mocking.
+- **Media Upload Leak**: Fixed `MediaModule.upload` to use the injected HTTP client rather than the global `http` client.
+
+### 🧪 Testing & Documentation
+- **Comprehensive Offline Test Suite**: Added `MockClient`-based tests for all endpoints (`auth`, `categories`, `comments`, `media`, `pages`, `posts`, `tags`, `users`, `wordpress_base`), ensuring reliable CI builds without hitting live servers.
+- Added `GEMINI.md` contributor guide and `TESTING.md` test architecture documentation.
+
+---
+
 ## 1.0.0
 
 ### 🚀 Major Release - Production Ready

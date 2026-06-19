@@ -1,0 +1,56 @@
+name: Publish to pub.dev
+
+on:
+  workflow_dispatch:
+
+# Pub.dev OIDC authentication requires these permissions
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          
+      - name: Install dependencies
+        run: flutter pub get
+        
+      - name: Format code
+        run: dart format --output=none --set-exit-if-changed .
+        
+      - name: Analyze code
+        run: flutter analyze
+        
+      - name: Publish dry run
+        run: |
+          output=$(dart pub publish --dry-run 2>&1)
+          echo "$output"
+          if echo "$output" | grep -qE "Package has [1-9][0-9]* warning"; then
+            echo "Dry run completed with warnings. Failing the workflow."
+            exit 1
+          fi
+        
+      - name: Publish to pub.dev
+        run: dart pub publish --force
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${{ steps.version.outputs.version }}" \
+            --title "v${{ steps.version.outputs.version }}" \
+            --notes "Published to pub.dev automatically from GitHub Actions."

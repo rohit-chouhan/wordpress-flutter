@@ -1,6 +1,6 @@
 name: wordpress
 description: A comprehensive Flutter SDK for WordPress REST API integration with type-safe models, authentication, and complete CRUD operations.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/rohit-chouhan/wordpress-flutter
 repository: https://github.com/rohit-chouhan/wordpress-flutter
 issue_tracker: https://github.com/rohit-chouhan/wordpress-flutter/issues
