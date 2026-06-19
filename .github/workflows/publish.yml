@@ -1,9 +1,6 @@
 name: Publish to pub.dev
 
 on:
-  # Allows you to trigger manually from the GitHub Actions tab
-  workflow_dispatch:
-  # Automatically triggers when you push a version tag (e.g., git tag v1.0.0 && git push --tags)
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
@@ -19,10 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 1. Setup Flutter (Resolves Flutter dependencies)
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
+          
+      # 2. Setup Dart (THIS IS THE MISSING PIECE! It generates the OIDC token for pub.dev)
+      - uses: dart-lang/setup-dart@v1
 
       - name: Install dependencies
         run: flutter pub get
@@ -41,7 +42,6 @@ jobs:
 
       - name: Extract version
         id: version
-        # Added 'tr' to strip potential quotes or carriage returns, making it bulletproof
         run: |
           VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}' | tr -d '\"\r')
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
