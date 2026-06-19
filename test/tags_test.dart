@@ -9,15 +9,17 @@ void main() {
     test('list returns list of Tags', () async {
       final mockClient = MockClient((request) async {
         expect(request.url.path, '/wp-json/wp/v2/tags');
-        return http.Response(jsonEncode([
-          {'id': 10, 'name': 'Flutter', 'slug': 'flutter'},
-          {'id': 20, 'name': 'Dart', 'slug': 'dart'}
-        ]), 200);
+        return http.Response(
+            jsonEncode([
+              {'id': 10, 'name': 'Flutter', 'slug': 'flutter'},
+              {'id': 20, 'name': 'Dart', 'slug': 'dart'}
+            ]),
+            200);
       });
 
       final wp = WordPress(baseUrl: 'https://example.com', client: mockClient);
       final tags = await wp.tags.list();
-      
+
       expect(tags, isA<List<Tag>>());
       expect(tags.length, 2);
       expect(tags[0].name, 'Flutter');
@@ -30,7 +32,7 @@ void main() {
       });
 
       final wp = WordPress(baseUrl: 'https://example.com', client: mockClient);
-      
+
       expect(() => wp.tags.list(), throwsA(isA<WordPressException>()));
     });
   });

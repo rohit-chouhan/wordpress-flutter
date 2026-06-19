@@ -8,7 +8,8 @@ void main() {
   group('WordPress Base', () {
     test('get method uses client and handles success', () async {
       final mockClient = MockClient((request) async {
-        expect(request.url.toString(), 'https://example.com/wp-json/wp/v2/test');
+        expect(
+            request.url.toString(), 'https://example.com/wp-json/wp/v2/test');
         return http.Response(jsonEncode({'success': true}), 200);
       });
 
@@ -62,7 +63,7 @@ void main() {
 
     test('token management', () {
       final wp = WordPress(baseUrl: 'https://example.com');
-      
+
       expect(wp.getToken(), isNull);
       expect(wp.getAuthHeaders().isEmpty, true);
 

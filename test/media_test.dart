@@ -10,14 +10,16 @@ void main() {
     test('list returns list of Media', () async {
       final mockClient = MockClient((request) async {
         expect(request.url.path, '/wp-json/wp/v2/media');
-        return http.Response(jsonEncode([
-          {'id': 1, 'sourceUrl': 'http://example.com/image.jpg'}
-        ]), 200);
+        return http.Response(
+            jsonEncode([
+              {'id': 1, 'sourceUrl': 'http://example.com/image.jpg'}
+            ]),
+            200);
       });
 
       final wp = WordPress(baseUrl: 'https://example.com', client: mockClient);
       final media = await wp.media.list();
-      
+
       expect(media, isA<List<Media>>());
       expect(media.length, 1);
       expect(media[0].sourceUrl, 'http://example.com/image.jpg');
@@ -27,15 +29,19 @@ void main() {
       final mockClient = MockClient((request) async {
         expect(request.url.path, '/wp-json/wp/v2/media');
         expect(request.method, 'POST');
-        
+
         // We just intercept the request and return success
-        return http.Response(jsonEncode({
-          'id': 2, 'title': {'rendered': 'My Image'}, 'sourceUrl': 'http://example.com/uploaded.jpg'
-        }), 201);
+        return http.Response(
+            jsonEncode({
+              'id': 2,
+              'title': {'rendered': 'My Image'},
+              'sourceUrl': 'http://example.com/uploaded.jpg'
+            }),
+            201);
       });
 
       final wp = WordPress(baseUrl: 'https://example.com', client: mockClient);
-      
+
       // Create a dummy temporary file
       final tempFile = File('temp_test_image.jpg');
       await tempFile.writeAsBytes([0, 1, 2, 3]);

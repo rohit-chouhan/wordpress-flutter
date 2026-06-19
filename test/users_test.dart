@@ -9,14 +9,15 @@ void main() {
     test('me returns current user profile', () async {
       final mockClient = MockClient((request) async {
         expect(request.url.path, '/wp-json/wp/v2/users/me');
-        return http.Response(jsonEncode({
-          'id': 1, 'name': 'Admin User', 'email': 'admin@test.com'
-        }), 200);
+        return http.Response(
+            jsonEncode(
+                {'id': 1, 'name': 'Admin User', 'email': 'admin@test.com'}),
+            200);
       });
 
       final wp = WordPress(baseUrl: 'https://example.com', client: mockClient);
       final user = await wp.users.me();
-      
+
       expect(user.id, 1);
       expect(user.name, 'Admin User');
     });
@@ -27,14 +28,15 @@ void main() {
         expect(request.method, 'PUT');
         final body = jsonDecode(request.body);
         expect(body['first_name'], 'Updated');
-        return http.Response(jsonEncode({
-          'id': 1, 'firstName': 'Updated', 'lastName': 'User'
-        }), 200);
+        return http.Response(
+            jsonEncode({'id': 1, 'firstName': 'Updated', 'lastName': 'User'}),
+            200);
       });
 
       final wp = WordPress(baseUrl: 'https://example.com', client: mockClient);
-      final user = await wp.users.update(firstName: 'Updated', lastName: 'User');
-      
+      final user =
+          await wp.users.update(firstName: 'Updated', lastName: 'User');
+
       expect(user.firstName, 'Updated');
       expect(user.lastName, 'User');
     });
@@ -42,15 +44,17 @@ void main() {
     test('list returns list of Users', () async {
       final mockClient = MockClient((request) async {
         expect(request.url.path, '/wp-json/wp/v2/users');
-        return http.Response(jsonEncode([
-          {'id': 1, 'name': 'User 1'},
-          {'id': 2, 'name': 'User 2'}
-        ]), 200);
+        return http.Response(
+            jsonEncode([
+              {'id': 1, 'name': 'User 1'},
+              {'id': 2, 'name': 'User 2'}
+            ]),
+            200);
       });
 
       final wp = WordPress(baseUrl: 'https://example.com', client: mockClient);
       final users = await wp.users.list();
-      
+
       expect(users, isA<List<User>>());
       expect(users.length, 2);
     });
