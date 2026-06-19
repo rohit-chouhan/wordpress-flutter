@@ -19,7 +19,7 @@ class Pages {
     if (search != null) queryParams['search'] = search;
 
     final endpoint =
-        'pages${queryParams.isNotEmpty ? '?' + queryParams.entries.map((e) => '${e.key}=${e.value}').join('&') : ''}';
+        'pages${queryParams.isNotEmpty ? '?${queryParams.entries.map((e) => '${e.key}=${e.value}').join('&')}' : ''}';
     final response = await wp.get(endpoint);
     final data = jsonDecode(response.body) as List;
     return data.map((json) => Page.fromJson(json)).toList();

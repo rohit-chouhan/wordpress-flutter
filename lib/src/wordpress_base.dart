@@ -1,9 +1,4 @@
-library wordpress_base;
 
-/// The main WordPress SDK class that provides access to all WordPress REST API endpoints.
-///
-/// This class initializes all the modules for interacting with different WordPress resources
-/// such as posts, pages, users, categories, tags, comments, and media.
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -19,6 +14,10 @@ part 'comments.dart';
 part 'media.dart';
 part 'users.dart';
 
+/// The main WordPress SDK class that provides access to all WordPress REST API endpoints.
+///
+/// This class initializes all the modules for interacting with different WordPress resources
+/// such as posts, pages, users, categories, tags, comments, and media.
 class WordPress {
   final String baseUrl;
   final http.Client _client;

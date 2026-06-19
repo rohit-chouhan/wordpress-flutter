@@ -29,7 +29,7 @@ class Posts {
     if (tag != null) queryParams['tags'] = tag.toString();
 
     final endpoint =
-        'posts${queryParams.isNotEmpty ? '?' + queryParams.entries.map((e) => '${e.key}=${e.value}').join('&') : ''}';
+        'posts${queryParams.isNotEmpty ? '?${queryParams.entries.map((e) => '${e.key}=${e.value}').join('&')}' : ''}';
     final response = await wp.get(endpoint);
     final data = jsonDecode(response.body);
     if (data is List) {
