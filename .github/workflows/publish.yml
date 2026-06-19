@@ -1,9 +1,13 @@
 name: Publish to pub.dev
 
 on:
+  # Allows you to trigger manually from the GitHub Actions tab
   workflow_dispatch:
+  # Automatically triggers when you push a version tag (e.g., git tag v1.0.0 && git push --tags)
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
 
-# Pub.dev OIDC authentication requires these permissions
 permissions:
   id-token: write
   contents: write
@@ -11,56 +15,48 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      
-      - name: Set up Dart
-        uses: dart-lang/setup-dart@v1
-      
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-          
+          channel: stable
+          cache: true
+
       - name: Install dependencies
         run: flutter pub get
-        
-      - name: Format code
-        run: dart format .
-        
-      - name: Analyze code
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
         run: flutter analyze
-        
+
       - name: Publish dry run
-        run: |
-          set +e
-          output=$(dart pub publish --dry-run 2>&1)
-          exit_code=$?
-          set -e
-          echo "$output"
-          if [ $exit_code -ne 0 ]; then
-            echo "Dry run failed with exit code $exit_code. Failing the workflow."
-            exit $exit_code
-          fi
-          if echo "$output" | grep -qE "Package has [1-9][0-9]* warning"; then
-            echo "Dry run completed with warnings. Failing the workflow."
-            exit 1
-          fi
-        
-      - name: Publish to pub.dev
-        run: dart pub publish --force
+        run: flutter pub publish --dry-run
+
+      - name: Publish
+        run: flutter pub publish --force
 
       - name: Extract version
         id: version
+        # Added 'tr' to strip potential quotes or carriage returns, making it bulletproof
         run: |
-          VERSION=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          VERSION=$(grep '^version:' pubspec.yaml | awk '{print $2}' | tr -d '\"\r')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "v${{ steps.version.outputs.version }}" \
-            --title "v${{ steps.version.outputs.version }}" \
-            --notes "Published to pub.dev automatically from GitHub Actions."
+          TAG="v${{ steps.version.outputs.version }}"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release already exists"
+            exit 0
+          fi
+
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --generate-notes
