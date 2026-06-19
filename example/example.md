@@ -1,3 +1,6 @@
+Here the example of all method, enjoy coding 😃
+
+```dart
 import 'package:flutter/material.dart';
 import 'package:wordpress/wordpress.dart';
 import 'screens/posts_screen.dart';
@@ -127,3 +130,4 @@ class _WordPressHomePageState extends State<WordPressHomePage> {
     super.dispose();
   }
 }
+```
